@@ -15,6 +15,37 @@
   </style>
 
 </head>
+
+<template id="content">
+  <div>
+    <div class="grid-stack-item-content"></div>
+  </div>
+</template>
+
+<template id="table">
+  <div>
+    <div class="grid-stack-item-content">
+      <table class="x"><tr><td><span>table should work</span></td></tr></table>
+    </div>
+  </div>
+</template>
+
+<template id="span">
+  <div>
+    <div class="grid-stack-item-content">
+      <div class="x"><span>using a span</span></div>
+    </div>
+  </div>
+</template>
+
+<template id="div">
+  <div>
+    <div class="grid-stack-item-content">
+      <div class="x">using a div</div>
+    </div>
+  </div>
+</template>
+
 <body>
   <div class="container-fluid">
     <h1>Float grid demo</h1>
@@ -26,13 +57,34 @@
     let grid = GridStack.init({float: true, cellHeight: 70});
     addEvents(grid);
     var items = [
-      {x: 0, y: 0, w: 2, h: 2, content: '<table class="x"><tr><td><span>table should work</span></td></tr></table>'},
-      {x: 2, y: 0, w: 2, h: 2, content: '<div class="x"><span>using a span</span></div>'},
-      {x: 4, y: 0, w: 2, h: 2, content: '<div class="x">using a div</div>'},
+      {x: 0, y: 0, w: 2, h: 2, id: 'table'},
+      {x: 2, y: 0, w: 2, h: 2, id: 'span'},
+      {x: 4, y: 0, w: 2, h: 2, id: 'div'},
       {x: 6, y: 0, w: 2, h: 2, content: 'works anywhere'},
     ];
 
-    grid.load(items);
+    function cloneFromTemplate(templateId) {
+      return document.getElementById(templateId).content.cloneNode(true).firstElementChild;
+    }
+
+    grid.load(items, function (parent, w, add) {
+      let el;
+
+      if (add) {
+        if (w.id) {
+          el = cloneFromTemplate(w.id);
+          el.className = 'grid-stack-item';
+          parent.appendChild(el);
+        } else if (w.content) {
+          el = cloneFromTemplate('content');
+          el.className = 'grid-stack-item';
+          el.querySelector('.grid-stack-item-content').textContent = w.content;
+          parent.appendChild(el);
+        }
+      }
+
+      return el;
+    });
   </script>
 </body>
 </html>

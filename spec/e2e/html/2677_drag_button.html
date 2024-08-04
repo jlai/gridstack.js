@@ -12,14 +12,34 @@
     .handle { cursor: move }
   </style>
 </head>
+
+<template id="button-handle">
+  <div>
+    <div class="grid-stack-item-content">
+      <button class="handle">Handle</button>
+    </div>
+  </div>
+</template>
+
+<template id="span">
+  <div>
+    <div class="grid-stack-item-content">
+      <span class="handle">Handle</span>
+    </div>
+  </div>
+</template>
+
 <body>
   <div class="grid-stack"></div>
   <script type="text/javascript">
-    let items = [
-      {x: 0, y: 0, content: '<button class="handle">Handle</button>'},
-      {x: 1, y: 0, w: 3, content: '<span class="handle">Handle</span>'},
-    ];
-    let grid = GridStack.init({handle: '.handle', cellHeight: 70}).load(items);
+    let grid = GridStack.init({handle: '.handle', cellHeight: 70});
+
+    function cloneFromTemplate(templateId) {
+      return document.getElementById(templateId).content.cloneNode(true).firstElementChild;
+    }
+
+    grid.addWidget(cloneFromTemplate('button-handle'), {x: 0, y: 0});
+    grid.addWidget(cloneFromTemplate('span-handle'), {x: 1, y: 0, w: 3});
   </script>
 </body>
 </html>

@@ -10,6 +10,11 @@
   <link rel="stylesheet" href="../dist/gridstack-extra.css"/>
   <script src="../dist/gridstack-all.js"></script>
 </head>
+
+<template id="remove-button">
+  <button onClick="grid.removeWidget(this.parentNode.parentNode)">X</button><br>
+</template>
+
 <body>
   <div class="container-fluid">
     <h1>column() grid demo (fix cellHeight)</h1>

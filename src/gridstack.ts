@@ -164,9 +164,8 @@ export class GridStack {
       if (GridStack.addRemoveCB) {
         el = GridStack.addRemoveCB(parent, opt, true, true);
       } else {
-        let doc = document.implementation.createHTMLDocument(''); // IE needs a param
-        doc.body.innerHTML = `<div class="grid-stack ${opt.class || ''}"></div>`;
-        el = doc.body.children[0] as HTMLElement;
+        el = document.createElement('div');
+        el.className = `grid-stack ${opt.class || ''}`;
         parent.appendChild(el);
       }
     }
@@ -230,7 +229,7 @@ export class GridStack {
       let placeholderChild = document.createElement('div'); // child so padding match item-content
       placeholderChild.className = 'placeholder-content';
       if (this.opts.placeholderText) {
-        placeholderChild.innerHTML = this.opts.placeholderText;
+        placeholderChild.textContent = this.opts.placeholderText;
       }
       this._placeholder = document.createElement('div');
       this._placeholder.classList.add(this.opts.placeholderClass, gridDefaults.itemClass, this.opts.itemClass);
@@ -448,7 +447,7 @@ export class GridStack {
    * @example
    * let grid = GridStack.init();
    * grid.addWidget({w: 3, content: 'hello'});
-   * grid.addWidget('<div class="grid-stack-item"><div class="grid-stack-item-content">hello</div></div>', {w: 3});
+   * grid.addWidget(el, {w: 3});
    *
    * @param el  GridStackWidget (which can have content string as well), html element, or string definition to add
    * @param options widget position/size options (optional, and ignore if first param is already option) - see GridStackWidget
@@ -461,9 +460,7 @@ export class GridStack {
     let el: GridItemHTMLElement;
     let node: GridStackNode;
     if (typeof els === 'string') {
-      let doc = document.implementation.createHTMLDocument(''); // IE needs a param
-      doc.body.innerHTML = els;
-      el = doc.body.children[0] as HTMLElement;
+      throw new Error('addWidget() no longer accepts HTML content');
     } else if (arguments.length === 0 || arguments.length === 1 && isGridStackWidget(els)) {
       node = options = els;
       if (node?.el) {
@@ -472,9 +469,13 @@ export class GridStack {
         el = GridStack.addRemoveCB(this.el, options, true, false);
       } else {
         let content = options?.content || '';
-        let doc = document.implementation.createHTMLDocument(''); // IE needs a param
-        doc.body.innerHTML = `<div class="grid-stack-item ${this.opts.itemClass || ''}"><div class="grid-stack-item-content">${content}</div></div>`;
-        el = doc.body.children[0] as HTMLElement;
+        let contentEl = document.createElement('div');
+        contentEl.className = 'grid-stack-item-content';
+        contentEl.textContent = content;
+
+        el = document.createElement('div');
+        el.className = `grid-stack-item ${this.opts.itemClass || ''}`;
+        el.appendChild(contentEl);
       }
     } else {
       el = els as HTMLElement;
@@ -553,12 +554,12 @@ export class GridStack {
       if (GridStack.addRemoveCB) {
         newItem = GridStack.addRemoveCB(this.el, newItemOpt, true, false);
       } else {
-        let doc = document.implementation.createHTMLDocument(''); // IE needs a param
-        doc.body.innerHTML = `<div class="grid-stack-item"></div>`;
-        newItem = doc.body.children[0] as HTMLElement;
+        newItem = document.createElement('div');
+        newItem.className = 'grid-stack-item';
         newItem.appendChild(content);
-        doc.body.innerHTML = `<div class="grid-stack-item-content"></div>`;
-        content = doc.body.children[0] as HTMLElement;
+
+        content = document.createElement('div');
+        content.className = 'grid-stack-item-content';
         node.el.appendChild(content);
       }
       this._prepareDragDropByNode(node); // ... and restore original D&D
@@ -638,7 +639,7 @@ export class GridStack {
     list.forEach(n => {
       if (saveContent && n.el && !n.subGrid && !saveCB) { // sub-grid are saved differently, not plain content
         let sub = n.el.querySelector('.grid-stack-item-content');
-        n.content = sub ? sub.innerHTML : undefined;
+        n.content = sub ? sub.textContent : undefined;
         if (!n.content) delete n.content;
       } else {
         if (!saveContent && !saveCB) { delete n.content; }
@@ -1324,8 +1325,8 @@ export class GridStack {
       // check for content changing
       if (w.content !== undefined) {
         const itemContent = el.querySelector('.grid-stack-item-content');
-        if (itemContent && itemContent.innerHTML !== w.content) {
-          itemContent.innerHTML = w.content;
+        if (itemContent && itemContent.textContent !== w.content) {
+          itemContent.textContent = w.content;
           // restore any sub-grid back
           if (n.subGrid?.el) {
             itemContent.appendChild(n.subGrid.el);

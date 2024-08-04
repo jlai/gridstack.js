@@ -361,7 +361,7 @@ Creates new widget and returns it. Options is an object containing the fields x,
 
 Parameters:
 
-- `el`: GridStackWidget | GridStackElement -  html element, or string definition, or GridStackWidget (which can have content string as well) to add
+- `el`: GridStackWidget | GridStackElement -  html element or GridStackWidget (which can have content string as well) to add
 - `options`: GridStackWidget - widget position/size options (optional, and ignore if first param is already option) - see GridStackWidget
 
 Widget will be always placed even if result height is more than actual grid height. You need to use `willItFit` method
@@ -371,7 +371,7 @@ before calling `addWidget` for additional check.
 let grid = GridStack.init();
 grid.addWidget({w: 3, content: 'hello'});
 // or
-grid.addWidget('<div class="grid-stack-item"><div class="grid-stack-item-content">hello</div></div>', {w: 3});
+grid.addWidget(el, {w: 3});
 ```
 
 ### `batchUpdate(flag = true)`

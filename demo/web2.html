@@ -28,6 +28,25 @@
   </style>
 </head>
 
+<template id="locked">
+  <div>
+    <div class="grid-stack-item-content">
+      I can't be moved or dragged!<br><ion-icon name="ios-lock" style="font-size:300%"></ion-icon>
+    </div>
+  </div>
+</template>
+
+<template id="drag-but-no-resize">
+  <div>
+    <div class="grid-stack-item-content">
+      <p class="card-text text-center" style="margin-bottom: 0">Drag me!</p>
+      <p class="card-text text-center"style="margin-bottom: 0">
+      <ion-icon name="hand" style="font-size: 300%"></ion-icon>
+      <p class="card-text text-center" style="margin-bottom: 0">...but don't resize me!</p>
+    </div>
+  </div>
+</template>
+
 <body>
   <h1>Advanced Demo</h1>
   <div class="row">
@@ -67,8 +86,6 @@
 
     let items = [
       {x: 0, y: 0, w: 4, h: 2, content: '1'},
-      {x: 4, y: 0, w: 4, h: 4, noMove: true, noResize: true, locked: true, content: 'I can\'t be moved or dragged!<br><ion-icon name="ios-lock" style="font-size:300%"></ion-icon>'},
-      {x: 8, y: 0, w: 2, h: 2, minW: 2, noResize: true, content: '<p class="card-text text-center" style="margin-bottom: 0">Drag me!<p class="card-text text-center"style="margin-bottom: 0"><ion-icon name="hand" style="font-size: 300%"></ion-icon><p class="card-text text-center" style="margin-bottom: 0">...but don\'t resize me!'},
       {x: 10, y: 0, w: 2, h: 2, content: '4'},
       {x: 0, y: 2, w: 2, h: 2, content: '5'},
       {x: 2, y: 2, w: 2, h: 4, content: '6'},
@@ -79,6 +96,13 @@
       {x: 10, y: 4, w: 2, h: 2, content: '11'},
     ];
     grid.load(items);
+
+    function cloneFromTemplate(templateId) {
+      return document.getElementById(templateId).content.cloneNode(true).firstElementChild;
+    }
+
+    grid.addWidget(cloneFromTemplate('locked'), {x: 4, y: 0, w: 4, h: 4, noMove: true, noResize: true, locked: true});
+    grid.addWidget(cloneFromTemplate('drag-but-no-resize'), {x: 8, y: 0, w: 2, h: 2, minW: 2, noResize: true});
     
     grid.on('added removed change', function(e, items) {
       let str = '';
